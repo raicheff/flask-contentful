@@ -34,6 +34,9 @@ class Contentful(object):
 
     def init_app(self, app, blueprint=None):
         space_id, access_token = (app.config.get(name) for name in ('CONTENTFUL_SPACE_ID', 'CONTENTFUL_DELIVERY_TOKEN'))
+        if not (space_id and space_id):
+            logger.warning('CONTENTFUL_SPACE_ID and/or CONTENTFUL_DELIVERY_TOKEN not set')
+            return
         self.client = Client(space_id=space_id, access_token=access_token)
         if blueprint is not None:
             blueprint.add_url_rule('/contentful', 'contentful', self.handle_webhook, methods=('POST',))
